@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
 import 'rxjs/add/operator/map';
 
 
 @Injectable()
 export class AuthData {
   fireAuth: any;
+  users$ : FirebaseObjectObservable<any>;
   constructor(public af: AngularFire) {
     af.auth.subscribe( user => {
       if (user) {
@@ -27,11 +28,12 @@ export class AuthData {
     // return firebase.auth().createUserWithEmailAndPassword(newEmail, newPassword);
     return this.af.auth.createUser(
       { email: newEmail,
-        password: newPassword })
-        /*.then(regUser => {
+        password: newPassword }).then(regUser => {
           // var ref = firebase.database().ref.child('users/').set(regUser.uid);
-          var ref = firebase.database().ref('users/');
-          ref.child('users/').set(regUser.uid);
-        }).catch(err => {console.log(err)});*/
+          // this.users$ = this.af.database.object('Users');
+
+          var ref = firebase.database().ref('/');
+          ref.child('users').child(regUser.uid).set({name: 'anas'});
+        }).catch(err => {console.log(err)});
   }
 }
