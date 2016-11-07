@@ -15,8 +15,8 @@ export class HomePage {
 
   }
   logoutUser() {
-    this.authData.logoutUser().then( () => {
-      this.navCrtl.root(LoginPage);
+    this.authData.logoutUser().then( authData => {
+      this.navCtrl.setRoot(LoginPage);
     });
   }
 
