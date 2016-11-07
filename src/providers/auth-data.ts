@@ -33,7 +33,7 @@ export class AuthData {
           // this.users$ = this.af.database.object('Users');
 
           var ref = firebase.database().ref('/');
-          ref.child('users').child(regUser.uid).set({name: 'anas'});
+          ref.child('users').child(regUser.uid).set({email: newEmail});
         }).catch(err => {console.log(err)});
   }
 }
