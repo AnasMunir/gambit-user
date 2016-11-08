@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Geolocation, Geoposition } from 'ionic-native';
 import { NavController } from 'ionic-angular';
-import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
+import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2';
 
 import { AuthData } from '../../providers/auth-data';
 import { LoginPage } from '../login/login';
@@ -13,7 +13,8 @@ declare var google;
   templateUrl: 'home.html'
 })
 export class HomePage {
-  users$ : FirebaseObjectObservable<any>;
+  users$: FirebaseObjectObservable<any>;
+  userData$: FirebaseListObservable<any>;
   public watch: any;
   public lat: number = 0;
   public lng: number = 0;
@@ -22,14 +23,12 @@ export class HomePage {
   constructor(public navCtrl: NavController, public authData: AuthData, public af: AngularFire) {
     // console.log(this.af.auth.getAuth());
     var user = firebase.auth().currentUser;
-     this.users$ = af.database.object('users/'+user.uid);
-     this.users$.update({university: 'comsats'});
+    this.users$ = af.database.object('users/'+user.uid);
+    this.userData$ = af.database.list('users/');
+    // this.users$.update({university: 'comsats'});
+    // this.users$.update({lat: this.lat, lng: this.lng});
     //  this.users$.subscribe(val => console.log(val));
-    var user = firebase.auth().currentUser;
-    console.log(user);
-    // if (user) {
-    //
-    // }
+
     let options = {
       frequency: 3000,
       enableHighAccuracy: true
@@ -37,9 +36,10 @@ export class HomePage {
     this.watch = Geolocation.watchPosition(options).subscribe((position: Geoposition) => {
       console.log(position.coords.latitude);
       console.log(position.coords.longitude);
-      this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      // this.locations$.update({lat: position.coords.latitude, lng: position.coords.longitude});
-      // this.moveMap(this.latLng);
+      this.lat = position.coords.latitude; this.lng = position.coords.longitude
+      this.users$.subscribe(() => {
+        this.users$.update({lat: this.lat, lng: this.lng});
+      })
     })
   }
   logoutUser() {
