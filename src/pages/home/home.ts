@@ -8,6 +8,7 @@ import { LoginPage } from '../login/login';
 
 declare var google;
 
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -19,6 +20,7 @@ export class HomePage {
   public lat: number = 0;
   public lng: number = 0;
   public latLng: any;
+  public locations;
 
   constructor(public navCtrl: NavController, public authData: AuthData, public af: AngularFire) {
     // console.log(this.af.auth.getAuth());
@@ -27,7 +29,16 @@ export class HomePage {
     this.userData$ = af.database.list('users/');
     // this.users$.update({university: 'comsats'});
     // this.users$.update({lat: this.lat, lng: this.lng});
-    //  this.users$.subscribe(val => console.log(val));
+     this.userData$.subscribe(val => {
+       console.log(val);
+       val.forEach(val => {
+         return this.locations = {lat: val.lat, lng: val.lng};
+       })
+       this.Print(this.locations);
+      //  console.log('lat: '+ this.locations);
+      //  console.log('lat: '+ this.locations.lat);
+      //  console.log('lng: '+ this.locations.lng);
+     });
 
     let options = {
       frequency: 3000,
@@ -47,13 +58,8 @@ export class HomePage {
       this.navCtrl.setRoot(LoginPage);
     });
   }
+  Print(val) {
+    var latLng = [] = val;
+    console.log(latLng);
+  }
 }
-/*return this.af.auth.createUser(
-  { email: newEmail,
-    password: newPassword }).then(regUser => {
-      // var ref = firebase.database().ref.child('users/').set(regUser.uid);
-      // this.users$ = this.af.database.object('Users');
-
-      var ref = firebase.database().ref('/');
-      ref.child('users').child(regUser.uid).set({email: newEmail});
-    }).catch(err => {console.log(err)});*/
