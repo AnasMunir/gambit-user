@@ -9,6 +9,7 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
 
 // Importing provider
 import { AuthData } from '../providers/auth-data';
+import { ConnectivityService } from '../providers/connectivity-serveice';
 
 // Import the AF2 Module
 import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
@@ -47,6 +48,6 @@ const myFirebaseAuthConfig = {
     ResetPasswordPage,
     SignUpPage
   ],
-  providers: [AuthData]
+  providers: [AuthData, ConnectivityService]
 })
 export class AppModule {}

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Geolocation, Geoposition } from 'ionic-native';
 import { NavController } from 'ionic-angular';
 import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2';
+import { ConnectivityService } from '../../providers/connectivity-service';
 
 import { AuthData } from '../../providers/auth-data';
 import { LoginPage } from '../login/login';
@@ -14,6 +15,12 @@ declare var google;
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @ViewChild('map') mapElement: ElementRef;
+
+  map: any;
+  mapInitialised: boolean = false;
+  apiKey: any;
+
   users$: FirebaseObjectObservable<any>;
   userData$: FirebaseListObservable<any>;
   public watch: any;
@@ -22,7 +29,8 @@ export class HomePage {
   public latLng: any;
   public locations;
 
-  constructor(public navCtrl: NavController, public authData: AuthData, public af: AngularFire) {
+  constructor(public navCtrl: NavController, public authData: AuthData,
+    public af: AngularFire, public connectivityService: ConnectivityService) {
     // console.log(this.af.auth.getAuth());
     var user = firebase.auth().currentUser;
     this.users$ = af.database.object('users/'+user.uid);
