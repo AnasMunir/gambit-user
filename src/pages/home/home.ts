@@ -47,26 +47,34 @@ export class HomePage {
         // console.log(position.coords.longitude);
         this.lat = position.coords.latitude; this.lng = position.coords.longitude
         // this.addMarker(this.lat, this.lng);
+        this.marker.setPosition({lat: this.lat, lng: this.lng});
         this.users$.subscribe(() => {
           // this.moveMarker(this.lat, this.lng);
           this.users$.update({lat: this.lat, lng: this.lng});
-          this.marker.setPosition({lat: this.lat, lng: this.lng});
         })
       });
 
       this.userData$ = this.af.database.list('users/');
-      /*this.userData$.subscribe(val => {
+
+      this.userData$.subscribe(val => {
 
         val.forEach(val => {
-          this.locations = {lat: val.lat, lng: val.lng};
+          if(val.logged){
+            console.log('lat '+ val.email + ' ' +val.lat);
+            console.log('lng '+ val.email + ' ' +val.lng);
+            this.addMarker(val.lat, val.lng);
+          } else {
+            console.log(val.email + ' user is logged out');
+          }
+          // this.locations = {lat: val.lat, lng: val.lng};
           // console.log(val.lat);
         });
-        let marker = new google.maps.Marker({
-          map: this.map,
-          animation: google.maps.Animation.DROP,
-          position: this.locations//this.map.getCenter()
-        });
-      });*/
+        // let marker = new google.maps.Marker({
+        //   map: this.map,
+        //   animation: google.maps.Animation.DROP,
+        //   position: this.locations//this.map.getCenter()
+        // });
+      });
 
   }
   moveMarker(lat, lng) {
