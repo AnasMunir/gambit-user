@@ -16,7 +16,11 @@ export class AuthData {
     });
   }
   loginUser(newEmail: string, newPassword: string): any {
-    return this.af.auth.login({email: newEmail, password: newPassword});
+    return this.af.auth.login({email: newEmail, password: newPassword})
+    .then(logUser => {
+      var ref = firebase.database().ref('/');
+      ref.child('users').child(logUser.uid).update({logged: true});
+    })
   }
   resetPassword(email: string): any {
     return firebase.auth().sendPasswordResetEmail(email);
@@ -29,8 +33,6 @@ export class AuthData {
     return this.af.auth.createUser(
       { email: newEmail,
         password: newPassword }).then(regUser => {
-          // var ref = firebase.database().ref.child('users/').set(regUser.uid);
-          // this.users$ = this.af.database.object('Users');
 
           var ref = firebase.database().ref('/');
           ref.child('users').child(regUser.uid).set({email: newEmail});

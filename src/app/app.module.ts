@@ -9,7 +9,8 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
 
 // Importing provider
 import { AuthData } from '../providers/auth-data';
-import { ConnectivityService } from '../providers/connectivity-serveice';
+// import { ConnectivityService } from '../providers/connectivity-serveice';
+import { ConnectivityService } from '../providers/connectivity-service';
 
 // Import the AF2 Module
 import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';

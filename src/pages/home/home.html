@@ -3,24 +3,26 @@
     <ion-title>
       Ionic Blank
     </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="logoutUser()">
+        logout
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
-  <h3>user: {{ (users$ | async )?.email }}</h3>
-  <h3> latitude: {{ (users$ | async )?.lat }} </h3>
-  <h3> longitude: {{ (users$ | async )?.lng }} </h3>
-  <ion-item *ngFor="let item of userData$ | async">
-    <ion-card-header>{{ item.email }}</ion-card-header>
-    <ion-card-header>{{ item.lat }}</ion-card-header>
-    <ion-card-header>{{ item.lng }}</ion-card-header>
-  </ion-item>
-
-  <button ion-button block clear (click)="logoutUser()">
+  <div #map id="map"></div>
+  <button ion-button (click)="logoutUser()">
     logout
   </button>
 </ion-content>
+
+<!-- <h3>user: {{ (users$ | async )?.email }}</h3>
+<h3> latitude: {{ (users$ | async )?.lat }} </h3>
+<h3> longitude: {{ (users$ | async )?.lng }} </h3>
+<ion-item *ngFor="let item of userData$ | async">
+<ion-card-header>{{ item.email }}</ion-card-header>
+<ion-card-header>{{ item.lat }}</ion-card-header>
+<ion-card-header>{{ item.lng }}</ion-card-header>
+</ion-item> -->
