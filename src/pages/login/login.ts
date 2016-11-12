@@ -23,6 +23,10 @@ export class LoginPage {
   submitAttempt: boolean = false;
   loading: any;
 
+  ionViewDidLoad() {
+    console.log('Hello LoginPage Page');
+  }
+
   constructor(public navCtrl: NavController,public authData: AuthData,
     public formBuilder: FormBuilder, public alertCtrl: AlertController,
     public loadingCtrl: LoadingController) {
@@ -71,10 +75,6 @@ export class LoginPage {
       });
       this.loading.present();
     }
-  }
-
-  ionViewDidLoad() {
-    console.log('Hello LoginPage Page');
   }
 
 }

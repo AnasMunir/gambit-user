@@ -30,10 +30,15 @@ export class HomePage {
   public lng: number = 0;
   public latLng: any;
   public locations: any;
+  public myMarker = [];
+
+  ionViewDidLoad() {
+    console.log('Hello Home Page');
+    this.loadGoogleMaps();
+  }
 
   constructor(public navCtrl: NavController, public authData: AuthData,
     public af: AngularFire, public connectivityService: ConnectivityService) {
-      this.loadGoogleMaps();
       // this.addMarker();
 
       var user = firebase.auth().currentUser;
@@ -47,22 +52,29 @@ export class HomePage {
         // console.log(position.coords.longitude);
         this.lat = position.coords.latitude; this.lng = position.coords.longitude
         // this.addMarker(this.lat, this.lng);
-        this.marker.setPosition({lat: this.lat, lng: this.lng});
+        this.marker.setPosition(new google.maps.LatLng(this.lat,this.lng));
         this.users$.subscribe(() => {
           // this.moveMarker(this.lat, this.lng);
           this.users$.update({lat: this.lat, lng: this.lng});
         })
       });
+      // var ref = firebase.database().ref('/');
+      // ref.child('users').child(auth().uid).set({email: newEmail});
+      // this.af.auth.
+      // this.userData$ = this.af.database.list('users/'+auth().uid);
 
-      this.userData$ = this.af.database.list('users/');
-
-      this.userData$.subscribe(val => {
+      var ref = firebase.database().ref('users');
+      ref.once('value').then(snapshot => {
+        console.log(snapshot.val().email);
+      })
+      /*this.userData$.subscribe(val => {
 
         val.forEach(val => {
           if(val.logged){
             console.log('lat '+ val.email + ' ' +val.lat);
             console.log('lng '+ val.email + ' ' +val.lng);
-            this.addMarker(val.lat, val.lng);
+            // myMarkers[val.email] = this.addArrayMarker(val.lat, val.lng);
+            // console.log(myMarkers);
           } else {
             console.log(val.email + ' user is logged out');
           }
@@ -74,10 +86,10 @@ export class HomePage {
         //   animation: google.maps.Animation.DROP,
         //   position: this.locations//this.map.getCenter()
         // });
-      });
+      });*/
 
   }
-  moveMarker(lat, lng) {
+  /*moveMarker(lat, lng) {
     let center = new google.maps.LatLng(lat, lng);
     this.marker.setPosition({lat: lat, lng: lng});
     var flightPlanCoordinates = [
@@ -92,11 +104,8 @@ export class HomePage {
         });
 
         flightPath.setMap(this.map);
-  }
+  }*/
   logoutUser() {
-    // var user = firebase.auth().currentUser;
-    // this.users$ = this.af.database.object('users/'+user.uid);
-    // this.users$.update({logged: true});
     this.users$.subscribe(() => {
       // this.moveMarker(this.lat, this.lng);
       this.users$.update({logged: false});
@@ -189,6 +198,13 @@ export class HomePage {
       position: {lat, lng}
     });
   }
+  // addArrayMarker(lat, lng) {
+  //   let marker = new google.maps.Marker({
+  //     map: this.map,
+  //     animation: google.maps.Animation.DROP,
+  //     position: {lat, lng}
+  //   });
+  // }
 
   disableMap(){
     console.log("disable map");
