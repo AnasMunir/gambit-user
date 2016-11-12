@@ -35,6 +35,7 @@ export class HomePage {
   ionViewDidLoad() {
     console.log('Hello Home Page');
     this.loadGoogleMaps();
+    // this.getDistance();
   }
 
   constructor(public navCtrl: NavController, public authData: AuthData,
@@ -114,7 +115,37 @@ export class HomePage {
       this.navCtrl.setRoot(LoginPage);
     });
   }
+  getDistance() {
+    var origin1 = {lat: 31.5159483, lng: 74.3413527};
+    var origin2 = 'Lahore, Pakistan';
+    var destinationA = 'Lahore, Pakistan';
+    // var destinationB = {lat: 50.087, lng: 14.421};
+    var destinationB = {lat: 31.513160, lng: 74.349596};
 
+    var geocoder = new google.maps.Geocoder;
+
+    var service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [origin1],
+        destinations: [destinationB],
+        travelMode: 'DRIVING',
+        unitSystem: google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false
+      }, (response, status) => {
+        if (status !== 'OK') {
+          alert('Error was: ' + status);
+      } else {
+        var originList = response.originAddresses;
+        var destinationList = response.destinationAddresses;
+        // console.log(originList);
+        // console.log(destinationList);
+        console.log('THe response: ');
+        console.log(response);
+        }
+      });
+  }
   Print(val) {
     var latLng = [] = val;
     console.log('Print: ')
@@ -179,6 +210,8 @@ export class HomePage {
 
   initMap(){
     this.mapInitialised = true;
+    var user = firebase.auth().currentUser;
+    var ref = firebase.database().ref('drivers/'+user.uid);
     Geolocation.getCurrentPosition().then((position) => {
       let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
@@ -188,6 +221,9 @@ export class HomePage {
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+      this.getDistance(
+
+        );
       return this.addMarker(position.coords.latitude, position.coords.longitude);
     });
   }
