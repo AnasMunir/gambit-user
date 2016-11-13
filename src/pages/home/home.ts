@@ -18,6 +18,7 @@ declare var google;
 })
 export class HomePage {
   @ViewChild('map') mapElement: ElementRef;
+  @ViewChild('distance') distElement: ElementRef;
 
   map: any; marker: any;
   mapInitialised: boolean = false;
@@ -31,7 +32,9 @@ export class HomePage {
   public latLng: any;
   public locations: any;
   public driverList = [];
-
+  public distances = [];
+  public currentLocation: any;
+  // public cars = ['Mercedes(2014)', 'BMW(2014)', 'Buick Regal GS	(2013)', 'Ford(2015)'];
   ionViewDidLoad() {
     console.log('Hello Home Page');
     this.loadGoogleMaps();
@@ -56,37 +59,25 @@ export class HomePage {
         this.driversData$.subscribe(val => {
           val.forEach(val => {
             //if(val.logged){
-            this.driverList.push({lat: val.lat, lng: val.lng});
+            // this.driverList.push(val);
               // this.getDistance(this.lat, this.lat, this.driverList);
               // console.log(this.driverList);
               // console.log(val.email + ' ' + 'lat ' +val.lat);
               // console.log(val.email + ' ' + 'lng ' +val.lng);
             //}
+            this.getDistance(this.lat, this.lng, val);
           });
-          console.log(this.driverList);
-          this.getDistance(this.lat, this.lng, this.driverList);
+          // console.log(this.driverList);
         });
-
+        // this.driverList.splice(0);
         this.marker.setPosition(new google.maps.LatLng(this.lat,this.lng));
         this.users$.subscribe(() => {
           // this.moveMarker(this.lat, this.lng);
           this.users$.update({lat: this.lat, lng: this.lng});
         })
       });
+      console.log(this.distances);
   }
-  /*getDrivers() {
-    this.driversData$ = this.af.database.list('drivers/');
-    this.driversData$.subscribe(val => {
-      val.forEach(val => {
-        //if(val.logged){
-          this.driverList.push({lat: val.lat, lng: val.lng});
-          // console.log(this.driverList);
-          console.log(val.email + ' ' + 'lat ' +val.lat);
-          console.log(val.email + ' ' + 'lng ' +val.lng);
-        //}
-      });
-    });
-  }*/
   logoutUser() {
     this.users$.subscribe(() => {
       // this.moveMarker(this.lat, this.lng);
@@ -96,16 +87,22 @@ export class HomePage {
       this.navCtrl.setRoot(LoginPage);
     });
   }
-  getDistance(lat, lng, drivers: any[]) {
+  getGeoCode(address) {
+    var geocoder = new google.maps.Geocoder;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status !== 'OK') {
+        alert('Error was: ' + status);
+      } else {
+        console.log(results)
+      }
+    });
+  }
+  getDistance(lat, lng, ...drivers: any[]) {
 
     var origin1 = {lat: lat, lng: lng};
-    // var origin2 = 'Lahore, Pakistan';
-    // var destinationA = 'Lahore, Pakistan';
-    var destinationB = {lat: 50.087, lng: 14.421};
-    // var destinationB = drivers;
     console.log(drivers);
-    // var geocoder = new google.maps.Geocoder;
-
+    var geocoder = new google.maps.Geocoder;
+    var cars = ['Mercedes(2014)', 'BMW(2014)', 'Buick Regal GS	(2013)', 'Ford(2015)'];
     var service = new google.maps.DistanceMatrixService();
     service.getDistanceMatrix(
       {
@@ -119,29 +116,36 @@ export class HomePage {
         if (status !== 'OK') {
           alert('Error was: ' + status);
       } else {
+        console.log(response);
         var originList = response.originAddresses;
         var destinationList = response.destinationAddresses;
-        // console.log(originList);
-        console.log(destinationList);
+        this.currentLocation = originList[0];
+        // this.getGeoCode(originList[0]);
         for (var i = 0; i < originList.length; i++) {
           var results = response.rows[i].elements;
           for (var j = 0; j < results.length; j++) {
             var element = results[j];
-            var distance = element.distance.text;
-            var duration = element.duration.text;
+            var distance = element.distance.value;
+            var duration = element.duration.value;
             var from = originList[i];
             var to = destinationList[j];
-            console.log('from ' + from);
-            console.log('to ' + to);
+            if(distance <= 5000) {
+              // this.drivers = drivers[j].email;
+              console.log('drivers ' + drivers[j].email)
+              console.log('distance ' + distance);
+
+              this.distances.push({dist: element.distance.text, driver: drivers[j].email, cars: cars[i+j]});
+            }
+            // console.log('from ' + from);
+            // console.log('to ' + to);
 
           }
         }
-        console.log('Entire response: ');
-        console.log(response);
-        console.log('distance ' + distance);
-        console.log('duration ' + duration);
+        // console.log('Entire response: ');
+        // console.log(this.distances);
         }
       });
+      // this.distances.splice(0);
   }
   Print(val) {
     var latLng = [] = val;
@@ -229,14 +233,6 @@ export class HomePage {
       position: {lat, lng}
     });
   }
-  // addArrayMarker(lat, lng) {
-  //   let marker = new google.maps.Marker({
-  //     map: this.map,
-  //     animation: google.maps.Animation.DROP,
-  //     position: {lat, lng}
-  //   });
-  // }
-
   disableMap(){
     console.log("disable map");
   }

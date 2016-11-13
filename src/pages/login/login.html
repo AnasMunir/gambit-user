@@ -7,18 +7,17 @@
 
 </ion-header>
 
-
 <ion-content padding>
-
-  <form [formGroup]="loginForm" (submit)="loginUser()" novalidate>
-    <ion-item>
-      <ion-label stacked>Email</ion-label>
-      <ion-input #email formControlName="email" type="email" (change)="elementChanged(email)"
+  <div id="loading-image">
+    <form [formGroup]="loginForm" (submit)="loginUser()" novalidate>
+      <ion-item>
+        <ion-label stacked>Email</ion-label>
+        <ion-input #email formControlName="email" type="email" (change)="elementChanged(email)"
         placeholder="Your email address"
         [class.invalid]="!loginForm.controls.email.valid &&
-          (emailChanged || submitAttempt)"></ion-input>
-    </ion-item>
-    <ion-item class="error-message" *ngIf="!loginForm.controls.email.valid  &&
+        (emailChanged || submitAttempt)"></ion-input>
+      </ion-item>
+      <ion-item class="error-message" *ngIf="!loginForm.controls.email.valid  &&
       (emailChanged || submitAttempt)">
       <p>Please enter a valid email.</p>
     </ion-item>
@@ -26,27 +25,28 @@
     <ion-item>
       <ion-label stacked>Password</ion-label>
       <ion-input #password formControlName="password" type="password"
-        (change)="elementChanged(password)"
-        placeholder="Your password"
-        [class.invalid]="!loginForm.controls.password.valid &&
-          (passwordChanged || submitAttempt)"></ion-input>
+      (change)="elementChanged(password)"
+      placeholder="Your password"
+      [class.invalid]="!loginForm.controls.password.valid &&
+      (passwordChanged || submitAttempt)"></ion-input>
     </ion-item>
     <ion-item class="error-message" *ngIf="!loginForm.controls.password.valid  &&
-      (passwordChanged || submitAttempt)">
-      <p>Your password needs more than 6 characters.</p>
-    </ion-item>
+    (passwordChanged || submitAttempt)">
+    <p>Your password needs more than 6 characters.</p>
+  </ion-item>
 
-    <button ion-button block type="submit">
-      Login
-    </button>
-  </form>
-
-  <button ion-button block clear (click)="goToResetPassword()">
-    I forgot my password 🙁
+  <button ion-button block type="submit">
+    Login
   </button>
+</form>
 
-  <button ion-button block clear (click)="createAccount()">
-    Create a new account
-  </button>
+<button ion-button block clear (click)="goToResetPassword()">
+  I forgot my password 🙁
+</button>
+
+<button ion-button block clear (click)="createAccount()">
+  Create a new account
+</button>
+  </div>
 
 </ion-content>

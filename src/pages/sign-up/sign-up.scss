@@ -26,5 +26,7 @@ page-sign-up {
     .error-message .item-inner {
       border-bottom: 0 !important;
     }
-
+    ion-content{
+      background-image: url('assets/images/hero-image.jpg');
+    }
 }
