@@ -24,18 +24,17 @@ export class HomePage {
   apiKey: 'AIzaSyA3inoU1ZODu-c4Nd-5bYC3Wr2Wt-9myLI';
 
   users$: FirebaseObjectObservable<any>;
-  userData$: FirebaseListObservable<any>;
+  driversData$: FirebaseListObservable<any>;
   public watch: any;
   public lat: number = 0;
   public lng: number = 0;
   public latLng: any;
   public locations: any;
-  public myMarker = [];
+  public driverList = [];
 
   ionViewDidLoad() {
     console.log('Hello Home Page');
     this.loadGoogleMaps();
-    // this.getDistance();
   }
 
   constructor(public navCtrl: NavController, public authData: AuthData,
@@ -44,6 +43,8 @@ export class HomePage {
 
       var user = firebase.auth().currentUser;
       this.users$ = this.af.database.object('users/'+user.uid);
+      this.driversData$ = this.af.database.list('drivers/');
+      // this.getDistance();
       let options = {
         frequency: 3000,
         enableHighAccuracy: true
@@ -52,59 +53,39 @@ export class HomePage {
         // console.log(position.coords.latitude);
         // console.log(position.coords.longitude);
         this.lat = position.coords.latitude; this.lng = position.coords.longitude
-        // this.addMarker(this.lat, this.lng);
+        this.driversData$.subscribe(val => {
+          val.forEach(val => {
+            //if(val.logged){
+            this.driverList.push({lat: val.lat, lng: val.lng});
+              // this.getDistance(this.lat, this.lat, this.driverList);
+              // console.log(this.driverList);
+              // console.log(val.email + ' ' + 'lat ' +val.lat);
+              // console.log(val.email + ' ' + 'lng ' +val.lng);
+            //}
+          });
+          console.log(this.driverList);
+          this.getDistance(this.lat, this.lng, this.driverList);
+        });
+
         this.marker.setPosition(new google.maps.LatLng(this.lat,this.lng));
         this.users$.subscribe(() => {
           // this.moveMarker(this.lat, this.lng);
           this.users$.update({lat: this.lat, lng: this.lng});
         })
       });
-      // var ref = firebase.database().ref('/');
-      // ref.child('users').child(auth().uid).set({email: newEmail});
-      // this.af.auth.
-      // this.userData$ = this.af.database.list('users/'+auth().uid);
-
-      var ref = firebase.database().ref('users');
-      ref.once('value').then(snapshot => {
-        console.log(snapshot.val().email);
-      })
-      /*this.userData$.subscribe(val => {
-
-        val.forEach(val => {
-          if(val.logged){
-            console.log('lat '+ val.email + ' ' +val.lat);
-            console.log('lng '+ val.email + ' ' +val.lng);
-            // myMarkers[val.email] = this.addArrayMarker(val.lat, val.lng);
-            // console.log(myMarkers);
-          } else {
-            console.log(val.email + ' user is logged out');
-          }
-          // this.locations = {lat: val.lat, lng: val.lng};
-          // console.log(val.lat);
-        });
-        // let marker = new google.maps.Marker({
-        //   map: this.map,
-        //   animation: google.maps.Animation.DROP,
-        //   position: this.locations//this.map.getCenter()
-        // });
-      });*/
-
   }
-  /*moveMarker(lat, lng) {
-    let center = new google.maps.LatLng(lat, lng);
-    this.marker.setPosition({lat: lat, lng: lng});
-    var flightPlanCoordinates = [
-          {lat: lat, lng: lng}
-        ];
-        var flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-
-        flightPath.setMap(this.map);
+  /*getDrivers() {
+    this.driversData$ = this.af.database.list('drivers/');
+    this.driversData$.subscribe(val => {
+      val.forEach(val => {
+        //if(val.logged){
+          this.driverList.push({lat: val.lat, lng: val.lng});
+          // console.log(this.driverList);
+          console.log(val.email + ' ' + 'lat ' +val.lat);
+          console.log(val.email + ' ' + 'lng ' +val.lng);
+        //}
+      });
+    });
   }*/
   logoutUser() {
     this.users$.subscribe(() => {
@@ -115,20 +96,21 @@ export class HomePage {
       this.navCtrl.setRoot(LoginPage);
     });
   }
-  getDistance() {
-    var origin1 = {lat: 31.5159483, lng: 74.3413527};
-    var origin2 = 'Lahore, Pakistan';
-    var destinationA = 'Lahore, Pakistan';
-    // var destinationB = {lat: 50.087, lng: 14.421};
-    var destinationB = {lat: 31.513160, lng: 74.349596};
+  getDistance(lat, lng, drivers: any[]) {
 
-    var geocoder = new google.maps.Geocoder;
+    var origin1 = {lat: lat, lng: lng};
+    // var origin2 = 'Lahore, Pakistan';
+    // var destinationA = 'Lahore, Pakistan';
+    var destinationB = {lat: 50.087, lng: 14.421};
+    // var destinationB = drivers;
+    console.log(drivers);
+    // var geocoder = new google.maps.Geocoder;
 
     var service = new google.maps.DistanceMatrixService();
     service.getDistanceMatrix(
       {
         origins: [origin1],
-        destinations: [destinationB],
+        destinations: drivers,
         travelMode: 'DRIVING',
         unitSystem: google.maps.UnitSystem.METRIC,
         avoidHighways: false,
@@ -140,9 +122,24 @@ export class HomePage {
         var originList = response.originAddresses;
         var destinationList = response.destinationAddresses;
         // console.log(originList);
-        // console.log(destinationList);
-        console.log('THe response: ');
+        console.log(destinationList);
+        for (var i = 0; i < originList.length; i++) {
+          var results = response.rows[i].elements;
+          for (var j = 0; j < results.length; j++) {
+            var element = results[j];
+            var distance = element.distance.text;
+            var duration = element.duration.text;
+            var from = originList[i];
+            var to = destinationList[j];
+            console.log('from ' + from);
+            console.log('to ' + to);
+
+          }
+        }
+        console.log('Entire response: ');
         console.log(response);
+        console.log('distance ' + distance);
+        console.log('duration ' + duration);
         }
       });
   }
@@ -221,9 +218,7 @@ export class HomePage {
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-      this.getDistance(
-
-        );
+      // this.getDistance();
       return this.addMarker(position.coords.latitude, position.coords.longitude);
     });
   }
