@@ -4,13 +4,15 @@ import { NavController } from 'ionic-angular';
 import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2';
 
 import { LoginPage } from '../login/login';
-
+import { Observable } from 'rxjs/Observable';
+// import { GeoFire } from '../../app/geofire.d'
 
 // providers
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { AuthData } from '../../providers/auth-data';
 
 declare var google;
+declare var GeoFire: any;
 
 @Component({
   selector: 'page-home',
@@ -33,11 +35,13 @@ export class HomePage {
   public locations: any;
   public driverList = [];
   public distances = [];
+  // positions: Geoposition[];
+  public position: Coordinates;
   public currentLocation: any;
   // public cars = ['Mercedes(2014)', 'BMW(2014)', 'Buick Regal GS	(2013)', 'Ford(2015)'];
   ionViewDidLoad() {
-    console.log('Hello Home Page');
-    this.loadGoogleMaps();
+    console.log('Hello Anas');
+    // this.loadGoogleMaps();
   }
 
   constructor(public navCtrl: NavController, public authData: AuthData,
@@ -48,35 +52,57 @@ export class HomePage {
       this.users$ = this.af.database.object('users/'+user.uid);
       this.driversData$ = this.af.database.list('drivers/');
       // this.getDistance();
+      var firebaseRef = firebase.database().ref();
+      var geoFire = new GeoFire(this.af.database.list('/locations').$ref);
+
+      // var ref = geoFire.ref();
+
+
+
       let options = {
         frequency: 3000,
         enableHighAccuracy: true
       };
-      this.watch = Geolocation.watchPosition(options).subscribe((position: Geoposition) => {
-        // console.log(position.coords.latitude);
-        // console.log(position.coords.longitude);
-        this.lat = position.coords.latitude; this.lng = position.coords.longitude
-        this.driversData$.subscribe(val => {
-          val.forEach(val => {
-            //if(val.logged){
-            // this.driverList.push(val);
-              // this.getDistance(this.lat, this.lat, this.driverList);
-              // console.log(this.driverList);
-              // console.log(val.email + ' ' + 'lat ' +val.lat);
-              // console.log(val.email + ' ' + 'lng ' +val.lng);
-            //}
-            this.getDistance(this.lat, this.lng, val);
-          });
-          // console.log(this.driverList);
-        });
-        // this.driverList.splice(0);
-        this.marker.setPosition(new google.maps.LatLng(this.lat,this.lng));
-        this.users$.subscribe(() => {
-          // this.moveMarker(this.lat, this.lng);
-          this.users$.update({lat: this.lat, lng: this.lng});
-        })
+      // var subscription = Geolocation.watchPosition(options)
+      // .subscribe((position:Geoposition) => {
+      //   console.log(position.coords['latitude']+ ' ' +position.coords['longitude']),
+      //   (error) => console.log(error);
+      // });
+
+
+      const watch$ = Geolocation.watchPosition(options).map((positions: Geoposition) => {
+        this.lat = positions.coords.latitude; this.lng = positions.coords.longitude
+        return {
+          lat: this.lat,
+          lng: this.lng
+        };
       });
-      console.log(this.distances);
+      // watch$.map(coord => {
+      //   return {lat: coord.latitude, lng: coord.longitude}
+      // });
+      // watch$.subscribe((positions: Geoposition) => {
+      //   this.lat = ,
+      //   () => {},
+      //   () => console.log("completed!");
+      // }
+      // );
+      watch$
+      .subscribe((positions) => {
+        geoFire.set("anas", [positions.lat, positions.lng]).then(function() {
+          console.log("Provided key has been added to GeoFire");
+        }, function(error) {
+          console.log("Error: " + error);
+        });
+        console.log(positions),
+        (error) => {},
+        console.log("completed!");
+      })
+
+      // // To stop notifications
+      // this.watch$.unsubscribe();
+      // subscription.unsubscribe();
+
+
   }
   logoutUser() {
     this.users$.subscribe(() => {
@@ -241,3 +267,29 @@ export class HomePage {
     console.log("enable map");
   }
 }
+/*this.watch = Geolocation.watchPosition(options).subscribe((position: Geoposition) => {
+  // console.log(position.coords.latitude);
+  // console.log(position.coords.longitude);
+  this.lat = position.coords.latitude; this.lng = position.coords.longitude
+  this.driversData$.subscribe(val => {
+    val.forEach(val => {
+      //if(val.logged){
+      // this.driverList.push(val);
+        // this.getDistance(this.lat, this.lat, this.driverList);
+        // console.log(this.driverList);
+        // console.log(val.email + ' ' + 'lat ' +val.lat);
+        // console.log(val.email + ' ' + 'lng ' +val.lng);
+      //}
+      this.getDistance(this.lat, this.lng, val);
+    });
+    // console.log(this.driverList);
+  });
+  // this.driverList.splice(0);
+  this.marker.setPosition(new google.maps.LatLng(this.lat,this.lng));
+  this.users$.subscribe(() => {
+    // this.moveMarker(this.lat, this.lng);
+    this.users$.update({lat: this.lat, lng: this.lng});
+  })
+});
+console.log(this.distances);
+*/
