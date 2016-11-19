@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { Slides } from 'ionic-angular';
 import { NavController, LoadingController, AlertController } from 'ionic-angular';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthData } from '../../providers/auth-data';
@@ -10,7 +11,12 @@ import { HomePage } from '../home/home';
   templateUrl: 'sign-up.html'
 })
 export class SignUpPage {
-  public signupForm;
+  @ViewChild('signupSlider') signupSlider: Slides;
+
+  public slideOneForm;
+
+  firstNameChanged: boolean = false;
+  lastNameChanged: boolean = false;
   emailChanged: boolean = false;
   passwordChanged: boolean = false;
   submitAttempt: boolean = false;
@@ -22,7 +28,9 @@ export class SignUpPage {
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController) {
 
-      this.signupForm = formBuilder.group({
+      this.slideOneForm = formBuilder.group({
+        firstName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+        lastName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
         email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
         password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
       });
@@ -34,7 +42,7 @@ export class SignUpPage {
       let field = input.inputControl.name;
       this[field + "Changed"] = true;
     }
-    
+
     /**
     * If the form is valid it will call the AuthData service to sign the user up password displaying a loading
     *  component while the user waits.
@@ -44,10 +52,12 @@ export class SignUpPage {
     signupUser(){
       this.submitAttempt = true;
 
-      if (!this.signupForm.valid){
-        console.log(this.signupForm.value);
+      if (!this.slideOneForm.valid){
+        this.signupSlider.slideTo(0);
+        console.log(this.slideOneForm.value);
       } else {
-        this.authData.signUpUser(this.signupForm.value.email, this.signupForm.value.password).then(() => {
+        this.authData.signUpUser(this.slideOneForm.value.firstName, this.slideOneForm.value.lastName, this.slideOneForm.value.email, this.slideOneForm.value.password)
+        .then(() => {
           this.navCtrl.setRoot(HomePage);
         }, (error) => {
           this.loading.dismiss().then( () => {

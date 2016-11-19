@@ -3,37 +3,73 @@
   <ion-navbar>
     <ion-title>SignUp</ion-title>
   </ion-navbar>
-
+  <ion-buttons start>
+    <button (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
+  </ion-buttons>
+  <ion-buttons end>
+    <button (click)="next()">Next <ion-icon name="arrow-forward"></ion-icon></button>
+  </ion-buttons>
 </ion-header>
 
 
 <ion-content padding>
-  <form [formGroup]="signupForm" (submit)="signupUser()" novalidate>
+  <ion-slides #signupSlider pager>
 
-    <ion-item>
-      <ion-label stacked>Email</ion-label>
-      <ion-input #email formControlName="email" type="email" (change)="elementChanged(email)"
-        placeholder="Your email address"
-        [class.invalid]="!signupForm.controls.email.valid && (emailChanged || submitAttempt)"></ion-input>
-    </ion-item>
-    <ion-item class="error-message" *ngIf="!signupForm.controls.email.valid  && (emailChanged || submitAttempt)">
-      <p>Please enter a valid email.</p>
-    </ion-item>
+    <ion-slide>
+      <form [formGroup]="slideOneForm" (submit)="signupUser()" novalidate>
 
-    <ion-item>
-      <ion-label stacked>Password</ion-label>
-      <ion-input #password formControlName="password" type="password" (change)="elementChanged(password)"
-        placeholder="Your password"
-        [class.invalid]="!signupForm.controls.password.valid && (passwordChanged || submitAttempt)"></ion-input>
-    </ion-item>
-    <ion-item class="error-message" *ngIf="!signupForm.controls.password.valid  && (passwordChanged || submitAttempt)">
-      <p>Your password needs more than 6 characters.</p>
-    </ion-item>
+        <ion-item>
+          <ion-label floating>First Name</ion-label>
+          <ion-input #firstName formControlName="firstName" type="text" (change)="elementChanged(firstName)"
+          placeholder="Your first name"
+          [class.invalid]="!slideOneForm.controls.firstName.valid && (firstNameChanged || submitAttempt)"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="!slideOneForm.controls.firstName.valid  && (firstNameChanged || submitAttempt)">
+          <p>Please enter a valid name.</p>
+        </ion-item>
 
-    <button ion-button block type="submit">
-      Create an Account
-    </button>
+        <ion-item>
+          <ion-label floating>Last Name</ion-label>
+          <ion-input #lastName formControlName="lastName" type="text" (change)="elementChanged(lastName)"
+          placeholder="Your last name"
+          [class.invalid]="!slideOneForm.controls.lastName.valid && (lastNameChanged || submitAttempt)"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="!slideOneForm.controls.lastName.valid  && (firstNameChanged || submitAttempt)">
+          <p>Please enter a valid name.</p>
+        </ion-item>
 
-  </form>
+        <ion-item>
+          <ion-label stacked>Email</ion-label>
+          <ion-input #email formControlName="email" type="email" (change)="elementChanged(email)"
+          placeholder="Your email address"
+          [class.invalid]="!slideOneForm.controls.email.valid && (emailChanged || submitAttempt)"></ion-input>
+        </ion-item>
+        <ion-item class="error-message" *ngIf="!slideOneForm.controls.email.valid  && (emailChanged || submitAttempt)">
+          <p>Please enter a valid email.</p>
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>Password</ion-label>
+          <ion-input #password formControlName="password" type="password" (change)="elementChanged(password)"
+          placeholder="Your password"
+          [class.invalid]="!slideOneForm.controls.password.valid && (passwordChanged || submitAttempt)"></ion-input>
+        </ion-item>
+        <ion-item class="error-message" *ngIf="!slideOneForm.controls.password.valid  && (passwordChanged || submitAttempt)">
+          <p>Your password needs more than 6 characters.</p>
+        </ion-item>
+
+        <button ion-button block type="submit">
+          Create an Account
+        </button>
+
+      </form>
+
+    </ion-slide>
+
+    <ion-slide>
+
+    </ion-slide>
+
+  </ion-slides>
 
 </ion-content>

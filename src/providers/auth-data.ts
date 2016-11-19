@@ -28,14 +28,14 @@ export class AuthData {
   logoutUser(): any {
     return this.af.auth.logout();
   }
-  signUpUser(newEmail: string, newPassword: string): any {
+  signUpUser(newFirstUser: string, newLastUser: string, newEmail: string, newPassword: string): any {
     // return firebase.auth().createUserWithEmailAndPassword(newEmail, newPassword);
     return this.af.auth.createUser(
       { email: newEmail,
         password: newPassword }).then(regUser => {
 
           var ref = firebase.database().ref('/');
-          ref.child('users').child(regUser.uid).set({email: newEmail});
+          ref.child('users').child(regUser.uid).set({firstname: newFirstUser, lastname: newLastUser, email: newEmail});
         }).catch(err => {console.log(err)});
   }
 }
