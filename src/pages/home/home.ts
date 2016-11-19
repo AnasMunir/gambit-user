@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
 import { NavController, Platform } from 'ionic-angular';
-import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng } from 'ionic-native';
+import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, Geolocation, Geoposition } from 'ionic-native';
+import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2';
 
 import { GoogleMaps } from '../../providers/google-maps'
+import { LoginPage } from '../login/login';
+import { Observable } from 'rxjs/Observable';
+import { AuthData } from '../../providers/auth-data';
 
 @Component({
   selector: 'page-home',
@@ -11,14 +15,15 @@ import { GoogleMaps } from '../../providers/google-maps'
 export class HomePage {
 
   map: GoogleMap;
+  users$: FirebaseObjectObservable<any>;
 
-  constructor(public navCtrl: NavController, public platform: Platform) {
+  constructor(public navCtrl: NavController, public platform: Platform, public authData: AuthData) {
     platform.ready().then(() => {
       this.loadMap();
     });
   }
 
-  loadMap(){
+  loadMap() {
 
     let location = new GoogleMapsLatLng(-34.9290,138.6010);
 
@@ -48,5 +53,10 @@ export class HomePage {
       console.log('Map is ready!');
     });
 
+  }
+  logoutUser() {
+    this.authData.logoutUser().then( authData => {
+      this.navCtrl.setRoot(LoginPage);
+    });
   }
 }

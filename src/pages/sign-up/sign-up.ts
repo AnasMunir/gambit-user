@@ -42,6 +42,13 @@ export class SignUpPage {
       let field = input.inputControl.name;
       this[field + "Changed"] = true;
     }
+    next(){
+      this.signupSlider.slideNext();
+    }
+
+    prev(){
+      this.signupSlider.slidePrev();
+    }
 
     /**
     * If the form is valid it will call the AuthData service to sign the user up password displaying a loading

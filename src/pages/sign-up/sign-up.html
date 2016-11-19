@@ -3,12 +3,12 @@
   <ion-navbar>
     <ion-title>SignUp</ion-title>
   </ion-navbar>
-  <ion-buttons start>
+  <!-- <ion-buttons start>
     <button (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
   </ion-buttons>
   <ion-buttons end>
     <button (click)="next()">Next <ion-icon name="arrow-forward"></ion-icon></button>
-  </ion-buttons>
+  </ion-buttons> -->
 </ion-header>
 
 
@@ -58,15 +58,21 @@
           <p>Your password needs more than 6 characters.</p>
         </ion-item>
 
-        <button ion-button block type="submit">
+        <!-- <button ion-button block type="submit">
           Create an Account
-        </button>
-
+        </button> -->
+        <button (click)="next()">Next <ion-icon name="arrow-forward"></ion-icon></button>
       </form>
 
     </ion-slide>
 
     <ion-slide>
+      <form [formGroup]="slideOneForm">
+        <button ion-button block type="submit">
+          Create an Account
+        </button>
+        <button (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
+      </form>
 
     </ion-slide>
 
