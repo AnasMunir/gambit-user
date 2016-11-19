@@ -36,4 +36,7 @@
   <plugin name="cordova-plugin-splashscreen" spec="~4.0.0"/>
   <plugin name="cordova-plugin-statusbar" spec="~2.2.0"/>
   <plugin name="ionic-plugin-keyboard" spec="~2.2.1"/>
+  <plugin name="cordova-plugin-googlemaps" spec="https://github.com/phonegap-googlemaps-plugin/cordova-plugin-googlemaps">
+    <variable name="API_KEY_FOR_ANDROID" value="AIzaSyBhLpKZ9OM0qi9s1nA2BEWt5IW1XuNky6o" />
+</plugin>
 </widget>

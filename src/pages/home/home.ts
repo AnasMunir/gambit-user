@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Geolocation, Geoposition } from 'ionic-native';
-import { NavController } from 'ionic-angular';
+import { Geolocation, Geoposition, GoogleMap, GoogleMapsEvent, GoogleMapsLatLng } from 'ionic-native';
+import { NavController, Platform } from 'ionic-angular';
 import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2';
 
 import { LoginPage } from '../login/login';
@@ -19,10 +19,10 @@ declare var GeoFire: any;
   templateUrl: 'home.html'
 })
 export class HomePage {
-  @ViewChild('map') mapElement: ElementRef;
-  @ViewChild('distance') distElement: ElementRef;
+  @ViewChild('map') mapElement;
 
-  map: any; marker: any;
+
+  map: GoogleMap; marker: any;
   mapInitialised: boolean = false;
   apiKey: 'AIzaSyA3inoU1ZODu-c4Nd-5bYC3Wr2Wt-9myLI';
 
@@ -41,13 +41,46 @@ export class HomePage {
   // public cars = ['Mercedes(2014)', 'BMW(2014)', 'Buick Regal GS	(2013)', 'Ford(2015)'];
   ionViewDidLoad() {
     console.log('Hello Anas');
+    // this.loadMap();
     // this.loadGoogleMaps();
   }
 
-  constructor(public navCtrl: NavController, public authData: AuthData,
+  constructor(public navCtrl: NavController, public authData: AuthData, public platform: Platform,
     public af: AngularFire, public connectivityService: ConnectivityService) {
-      // this.addMarker();
+      /*platform.ready().then(() => {
+        let location = new GoogleMapsLatLng(-34.9290,138.6010);
 
+        this.map = new GoogleMap('map', {
+          'backgroundColor': 'white',
+          'controls': {
+            'compass': true,
+            'myLocationButton': true,
+            'indoorPicker': true,
+            'zoom': true
+          },
+          'gestures': {
+            'scroll': true,
+            'tilt': true,
+            'rotate': true,
+            'zoom': true
+          },
+          'camera': {
+            'latLng': location,
+            'tilt': 30,
+            'zoom': 15,
+            'bearing': 50
+          }
+        });
+
+        this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+          console.log('Map is ready!');
+          this.map.setVisible(true);
+          this.map.showDialog();
+          this.map.getMyLocation();
+          // map.showDialog();
+        });
+      });*/
+      // this.addMarker();
       var user = firebase.auth().currentUser;
       this.users$ = this.af.database.object('users/'+user.uid);
       this.driversData$ = this.af.database.list('drivers/');
@@ -56,19 +89,10 @@ export class HomePage {
       var geoFire = new GeoFire(this.af.database.list('/locations').$ref);
 
       // var ref = geoFire.ref();
-
-
-
       let options = {
         frequency: 3000,
         enableHighAccuracy: true
       };
-      // var subscription = Geolocation.watchPosition(options)
-      // .subscribe((position:Geoposition) => {
-      //   console.log(position.coords['latitude']+ ' ' +position.coords['longitude']),
-      //   (error) => console.log(error);
-      // });
-
 
       const watch$ = Geolocation.watchPosition(options).map((positions: Geoposition) => {
         this.lat = positions.coords.latitude; this.lng = positions.coords.longitude
@@ -86,22 +110,42 @@ export class HomePage {
       //   () => console.log("completed!");
       // }
       // );
-      watch$
-      .subscribe((positions) => {
-        geoFire.set("anas", [positions.lat, positions.lng]).then(function() {
-          console.log("Provided key has been added to GeoFire");
-        }, function(error) {
-          console.log("Error: " + error);
-        });
-        console.log(positions),
-        (error) => {},
-        console.log("completed!");
-      })
+      // watch$
+      // .subscribe((positions) => {
+      //   geoFire.set("anas", [positions.lat, positions.lng]).then(function() {
+      //     console.log("Provided key has been added to GeoFire");
+      //   }, function(error) {
+      //     console.log("Error: " + error);
+      //   });
+      //   console.log(positions),
+      //   (error) => {},
+      //   console.log("completed!");
+      // })
+      geoFire.get("anas").then(function(location) {
+        if (location === null) {
+          console.log("Provided key is not in GeoFire");
+        }
+        else {
+          console.log("Provided key has a location of " + location);
+        }
+      }, function(error) {
+        console.log("Error: " + error);
+      });
+      var location1 = [31.513356, 74.315126];
+      var location2 = [31.516464, 74.31526];
 
+      var distance = GeoFire.distance(location1, location2);
+      console.log('distance =' + distance);
       // // To stop notifications
       // this.watch$.unsubscribe();
       // subscription.unsubscribe();
 
+
+  }
+  private onPlatformReady(): void {
+
+  }
+  ngAfterViewInit() {
 
   }
   logoutUser() {
@@ -249,7 +293,7 @@ export class HomePage {
       }
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
       // this.getDistance();
-      return this.addMarker(position.coords.latitude, position.coords.longitude);
+      // return this.addMarker(position.coords.latitude, position.coords.longitude);
     });
   }
   addMarker(lat, lng) {
@@ -265,6 +309,37 @@ export class HomePage {
 
   enableMap(){
     console.log("enable map");
+  }
+  loadMap(){
+
+    let location = new GoogleMapsLatLng(-34.9290,138.6010);
+
+    this.map = new GoogleMap('map', {
+      'backgroundColor': 'white',
+      'controls': {
+        'compass': true,
+        'myLocationButton': true,
+        'indoorPicker': true,
+        'zoom': true
+      },
+      'gestures': {
+        'scroll': true,
+        'tilt': true,
+        'rotate': true,
+        'zoom': true
+      },
+      'camera': {
+        'latLng': location,
+        'tilt': 30,
+        'zoom': 15,
+        'bearing': 50
+      }
+    });
+
+    this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+      console.log('Map is ready!');
+    });
+
   }
 }
 /*this.watch = Geolocation.watchPosition(options).subscribe((position: Geoposition) => {
