@@ -14,11 +14,30 @@ export class SignUpPage {
   @ViewChild('signupSlider') signupSlider: Slides;
 
   public slideOneForm;
+  public slideTwoForm;
 
   firstNameChanged: boolean = false;
   lastNameChanged: boolean = false;
   emailChanged: boolean = false;
+  phoneNumberChanged: boolean = false;
   passwordChanged: boolean = false;
+
+
+  ssnChanged: boolean = false;
+
+  streetAddressChanged: boolean = false;
+  cityChanged: boolean = false;
+  stateChanged: boolean = false;
+  zipcodeChanged: boolean = false;
+
+  drivingLicenseChanged: boolean = false;
+  expirationDataChanged: boolean = false;
+
+  carMakeChanged: boolean = false;
+  carModelChanged: boolean = false;
+  carYearChanged: boolean = false;
+  carColorChanged: boolean = false;
+
   submitAttempt: boolean = false;
   loading;
 
@@ -32,7 +51,28 @@ export class SignUpPage {
         firstName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
         lastName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
         email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
+        streetAddress: [''],
+        address: this.formBuilder.group({
+          city: ['', Validators.required],
+          state: ['', Validators.required],
+          zipcode: ['', Validators.compose([Validators.maxLength(5), Validators.pattern('[0-9]*')])],
+            }),
+        phoneNumber: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[0-9]*'), Validators.required])],
         password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
+      });
+
+      this.slideTwoForm = formBuilder.group({
+        ssn: ['', Validators.compose([Validators.maxLength(11), Validators.pattern('[0-9]*'), Validators.required])],
+        drivingCredentials: this.formBuilder.group({
+          drivingLicense: ['', Validators.compose([Validators.maxLength(8), Validators.pattern('[0-9]*')])],
+          expirationDate: [''],
+        }),
+        carDetails: this.formBuilder.group({
+          carMake: ['', Validators.required],
+          carModel: ['', Validators.required],
+          carYear: ['', Validators.required],
+          carColor: ['', Validators.required],
+        })
       });
     }
     /**
@@ -62,8 +102,28 @@ export class SignUpPage {
       if (!this.slideOneForm.valid){
         this.signupSlider.slideTo(0);
         console.log(this.slideOneForm.value);
+      } else if(!this.slideTwoForm.valid) {
+        this.signupSlider.slideTo(1);
+        console.log(this.slideTwoForm.value);
       } else {
-        this.authData.signUpUser(this.slideOneForm.value.firstName, this.slideOneForm.value.lastName, this.slideOneForm.value.email, this.slideOneForm.value.password)
+        this.authData.signUpUser(
+          this.slideOneForm.value.firstName,
+          this.slideOneForm.value.lastName,
+          this.slideOneForm.value.email,
+          this.slideOneForm.value.address.value.streetAddress,
+          this.slideOneForm.value.address.value.city,
+          this.slideOneForm.value.address.value.state,
+          this.slideOneForm.value.address.value.zipcode,
+          this.slideOneForm.value.phoneNumber,
+          this.slideOneForm.value.password,
+          this.slideTwoForm.value.ssn,
+          this.slideTwoForm.value.drivingCredentials.value.drivingLicense,
+          this.slideTwoForm.value.drivingCredentials.value.expirationDate,
+          this.slideTwoForm.value.carDetails.value.carMake,
+          this.slideTwoForm.value.carDetails.value.carModel,
+          this.slideTwoForm.value.carDetails.value.carYear,
+          this.slideTwoForm.value.carDetails.value.carColor,
+        )
         .then(() => {
           this.navCtrl.setRoot(HomePage);
         }, (error) => {
