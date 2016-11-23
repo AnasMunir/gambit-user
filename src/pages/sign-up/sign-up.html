@@ -48,18 +48,20 @@
 
             <ion-row>
               <ion-col>
-                <ion-item>
+                <ion-item formGroupName="address">
                   <ion-label floating>City</ion-label>
-                  <ion-select #city (change)="elementChanged(city)" ngControl="city">
+                  <ion-select [class.invalid]="!slideOneForm.controls.address.controls.city.valid
+                  && (slideOneForm.controls.address.controls.city.dirty || submitAttempt)" formControlName="city">
                     <ion-option value="SF" selected>San Francisco</ion-option>
                   </ion-select>
                 </ion-item>
               </ion-col>
 
               <ion-col>
-                <ion-item>
+                <ion-item formGroupName="address">
                   <ion-label floating>State</ion-label>
-                  <ion-select #state (change)="elementChanged(state)" ngControl="state">
+                  <ion-select [class.invalid]="!slideOneForm.controls.address.controls.state.valid
+                  && (slideOneForm.controls.address.controls.state.dirty || submitAttempt)" formControlName="state">
                     <ion-option value="CF" selected>California</ion-option>
                   </ion-select>
                 </ion-item>
@@ -131,28 +133,24 @@
         <ion-row>
           <ion-col>
             <ion-item formGroupName="carDetails">
-
                 <ion-label floating>car make</ion-label>
-                <ion-select #carMake (change)="elementChanged(carMake)" ngControl="carMake">
-                <ion-option  value="ford" selected>Ford</ion-option>
-                <ion-option  value="bmw">BMW</ion-option>
-                <ion-option  value="mercedes">Mercedes</ion-option>
+                <ion-select [class.invalid]="!slideTwoForm.controls.carDetails.controls.carMake.valid
+                && (slideTwoForm.controls.carDetails.controls.carMake.dirty || submitAttempt)" formControlName="carMake">
+                <ion-option  value="Ford" selected>Ford</ion-option>
+                <ion-option  value="BMW">BMW</ion-option>
+                <ion-option  value="Mercedes">Mercedes</ion-option>
               </ion-select>
             </ion-item>
           </ion-col>
           <ion-col>
-            <ion-item fromGroupName="carDetails">
-              <ion-label floating>car color</ion-label>
-              <ion-select #carColor ngControl="carColor"
-              [class.invalid]="!slideTwoForm.controls.carDetails.controls.carColor.valid && (carColorChanged || submitAttempt)"
-                (change)="elementChanged(carColor)">
-                <ion-option value="black" selected>Black</ion-option>
-                <ion-option value="white">White</ion-option>
-                <ion-option value="silver">Silver</ion-option>
+            <ion-item formGroupName="carDetails">
+                <ion-label floating>car color</ion-label>
+                <ion-select [class.invalid]="!slideTwoForm.controls.carDetails.controls.carColor.valid
+                && (slideTwoForm.controls.carDetails.controls.carColor.dirty || submitAttempt)" formControlName="carColor">
+                <ion-option  value="Silver" selected>Silver</ion-option>
+                <ion-option  value="Black">Black</ion-option>
+                <ion-option  value="Blue">Blue</ion-option>
               </ion-select>
-            </ion-item>
-            <ion-item *ngIf="!slideTwoForm.controls.carDetails.controls.carColor.valid  && (carColorChanged || submitAttempt)">
-              <p>Please select color.</p>
             </ion-item>
           </ion-col>
         </ion-row>
