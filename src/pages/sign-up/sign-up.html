@@ -11,164 +11,187 @@
   </ion-buttons> -->
 </ion-header>
 
-
 <ion-content padding>
-  <ion-slides #signupSlider pager>
 
-    <ion-slide>
-      <form [formGroup]="slideOneForm" (submit)="signupUser()" novalidate>
+    <ion-slides #signupSlider pager>
 
-        <ion-item>
-          <ion-label s>First Name</ion-label>
-          <ion-input #firstName formControlName="firstName" type="text" (change)="elementChanged(firstName)"
-          placeholder="Your first name"
-          [class.invalid]="!slideOneForm.controls.firstName.valid && (firstNameChanged || submitAttempt)"></ion-input>
-        </ion-item>
-        <ion-item *ngIf="!slideOneForm.controls.firstName.valid  && (firstNameChanged || submitAttempt)">
-          <p>Please enter a valid name.</p>
-        </ion-item>
+      <ion-slide>
 
-        <ion-item>
-          <ion-label floating>Last Name</ion-label>
-          <ion-input #lastName formControlName="lastName" type="text" (change)="elementChanged(lastName)"
-          placeholder="Your last name"
-          [class.invalid]="!slideOneForm.controls.lastName.valid && (lastNameChanged || submitAttempt)"></ion-input>
-        </ion-item>
-        <ion-item *ngIf="!slideOneForm.controls.lastName.valid  && (lastNameChanged || submitAttempt)">
-          <p>Please enter a valid name.</p>
-        </ion-item>
+          <form [formGroup]="slideOneForm">
 
-        <ion-item>
-          <ion-label floating>Email</ion-label>
-          <ion-input #email formControlName="email" type="email" (change)="elementChanged(email)"
-          placeholder="Your email address"
-          [class.invalid]="!slideOneForm.controls.email.valid && (emailChanged || submitAttempt)"></ion-input>
-        </ion-item>
-        <ion-item class="error-message" *ngIf="!slideOneForm.controls.email.valid  && (emailChanged || submitAttempt)">
-          <p>Please enter a valid email.</p>
-        </ion-item>
+            <ion-item>
+              <ion-label floating>Full Name</ion-label>
+              <ion-input #fullName formControlName="fullName" type="text" (change)="elementChanged(fullName)"
+              [class.invalid]="!slideOneForm.controls.fullName.valid && (fullNameChanged || submitAttempt)"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!slideOneForm.controls.fullName.valid  && (fullNameChanged || submitAttempt)">
+              <p>Please enter a valid name.</p>
+            </ion-item>
 
-        <ion-item>
-          <ion-label floating>Street Adress</ion-label>
-          <ion-input #streetAddress formControlName="streetAddress" type="text" (change)="elementChanged(streetAddress)"
-          placeholder="street address"
-          [class.invalid]="!slideOneForm.controls.streetAddress.valid && (streetAddressChanged || submitAttempt)"></ion-input>
-        </ion-item>
-        <ion-item class="error-message" *ngIf="!slideOneForm.controls.streetAddress.valid  && (streetAddressChanged || submitAttempt)">
-          <p>Please enter a valid street address.</p>
-        </ion-item>
+            <ion-item>
+              <ion-label floating>Email</ion-label>
+              <ion-input #email formControlName="email" type="email" (change)="elementChanged(email)"
+              [class.invalid]="!slideOneForm.controls.email.valid && (emailChanged || submitAttempt)"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" *ngIf="!slideOneForm.controls.email.valid  && (emailChanged || submitAttempt)">
+              <p>Please enter a valid email.</p>
+            </ion-item>
 
-        <ion-item>
-          <ion-label floating>City</ion-label>
-          <ion-select #city (change)="elementChanged(city)" ngControl="city">
-            <ion-option value="SF" checked="true">San Francisco</ion-option>
-          </ion-select>
-        </ion-item>
+            <!-- <ion-item formGroupName="address">
+              <ion-label floating>Street Adress</ion-label>
+              <ion-input #streetAddress formControlName="streetAddress" type="text" (change)="elementChanged(streetAddress)"
+              [class.invalid]="!slideOneForm.controls.address.controls.streetAddress.valid && (streetAddressChanged || submitAttempt)"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" *ngIf="!slideOneForm.controls.address.controls.streetAddress.valid  && (streetAddressChanged || submitAttempt)">
+              <p>Please enter a valid street address.</p>
+            </ion-item> -->
 
-        <ion-item>
-          <ion-label floating>State</ion-label>
-          <ion-select #state (change)="elementChanged(state)" ngControl="state">
-            <ion-option value="CF" checked="true">California</ion-option>
-          </ion-select>
-        </ion-item>
+            <ion-row>
+              <ion-col>
+                <ion-item>
+                  <ion-label floating>City</ion-label>
+                  <ion-select #city (change)="elementChanged(city)" ngControl="city">
+                    <ion-option value="SF" selected>San Francisco</ion-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
 
-        <ion-item>
-          <ion-label floating>zipcode</ion-label>
-          <ion-input #zipcode formControlName="zipcode" type="number" (change)="elementChanged(zipcode)"
-          placeholder="zipcode"
-            [class.invalid]="!slideOneForm.controls.address.controls.zipcode.valid && (zipcodeChanged || submitAttempt)"></ion-input>
-        </ion-item>
-        <ion-item *ngIf="!slideOneForm.controls.address.controls.zipcode.valid  && (zipcodeChanged || submitAttempt)">
-          <p>Please enter a valid zipcode.</p>
-        </ion-item>
+              <ion-col>
+                <ion-item>
+                  <ion-label floating>State</ion-label>
+                  <ion-select #state (change)="elementChanged(state)" ngControl="state">
+                    <ion-option value="CF" selected>California</ion-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
 
-        <ion-item>
-          <ion-label floating>Phone Number</ion-label>
-          <ion-input #phoneNumber formControlName="phoneNumber" type="number" (change)="elementChanged(phoneNumber)"
-          placeholder="cell phone number"
-            [class.invalid]="!slideOneForm.controls.phoneNumber.valid && (phoneNumberChanged || submitAttempt)"></ion-input>
-        </ion-item>
-        <ion-item *ngIf="!slideOneForm.controls.phoneNumber.valid  && (phoneNumberChanged || submitAttempt)">
-          <p>Please enter a valid phone number.</p>
-        </ion-item>
+            <ion-row>
+              <ion-col>
+                <ion-item>
+                  <ion-label floating>Phone Number</ion-label>
+                  <ion-input #phoneNumber formControlName="phoneNumber" type="number" (change)="elementChanged(phoneNumber)"
+                  [class.invalid]="!slideOneForm.controls.phoneNumber.valid && (phoneNumberChanged || submitAttempt)"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.phoneNumber.valid  && (phoneNumberChanged || submitAttempt)">
+                  <p>Please enter a valid phone number.</p>
+                </ion-item>
+              </ion-col>
 
+              <ion-col>
+                <ion-item formGroupName="address">
+                  <ion-label floating>zipcode</ion-label>
+                  <ion-input #zipcode formControlName="zipcode" type="number" (change)="elementChanged(zipcode)"
+                  [class.invalid]="!slideOneForm.controls.address.controls.zipcode.valid && (zipcodeChanged || submitAttempt)"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.address.controls.zipcode.valid  && (zipcodeChanged || submitAttempt)">
+                  <p>Please enter a valid zipcode.</p>
+                </ion-item>
+              </ion-col>
+            </ion-row>
 
-        <ion-item>
-          <ion-label floating>Password</ion-label>
-          <ion-input #password formControlName="password" type="password" (change)="elementChanged(password)"
-          placeholder="Your password"
-          [class.invalid]="!slideOneForm.controls.password.valid && (passwordChanged || submitAttempt)"></ion-input>
-        </ion-item>
-        <ion-item class="error-message" *ngIf="!slideOneForm.controls.password.valid  && (passwordChanged || submitAttempt)">
-          <p>Your password needs more than 6 characters.</p>
-        </ion-item>
-        <!-- <button ion-button block type="submit">
-          Create an Account
-        </button> -->
-      </form>
+            <!-- <button ion-button block type="submit">
+            Create an Account
+          </button> -->
+        </form>
       <button (click)="next()">Next <ion-icon name="arrow-forward"></ion-icon></button>
 
     </ion-slide>
 
-    <ion-slide>
+    <ion-slide> <!--(submit)="signupUser()" novalidate-->
       <form [formGroup]="slideTwoForm">
-        <!-- <ion-item>
-          <ion-label floating>SSN</ion-label>
+        <ion-item>
+          <ion-label floating>Social Security Number</ion-label>
           <ion-input #ssn formControlName="ssn" type="number" (change)="elementChanged(ssn)"
-          placeholder="Social Security Number"
             [class.invalid]="!slideTwoForm.controls.ssn.valid && (ssnChanged || submitAttempt)"></ion-input>
         </ion-item>
         <ion-item *ngIf="!slideTwoForm.controls.ssn.valid  && (ssnChanged || submitAttempt)">
           <p>Please enter a valid ssn.</p>
         </ion-item>
 
+        <ion-row>
+          <ion-col>
+            <ion-item formGroupName="drivingCredentials">
+              <ion-label floating>driving license</ion-label>
+              <ion-input #drivingLicense formControlName="drivingLicense" type="text" (change)="elementChanged(drivingLicense)"
+              [class.invalid]="!slideTwoForm.controls.drivingCredentials.controls.drivingLicense.valid && (drivingLicenseChanged || submitAttempt)"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!slideTwoForm.controls.drivingCredentials.controls.drivingLicense.valid  && (drivingLicenseChanged || submitAttempt)">
+              <p>Please enter a valid license number.</p>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item formGroupName="drivingCredentials">
+              <ion-label floating>license expiry date</ion-label>
+              <ion-datetime #expirationDate formControlName="expirationDate" displayFormat="MM-DD-YYYY" (change)="elementChanged(expirationDate)"></ion-datetime>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item formGroupName="carDetails">
+
+                <ion-label floating>car make</ion-label>
+                <ion-select #carMake (change)="elementChanged(carMake)" ngControl="carMake">
+                <ion-option  value="ford" selected>Ford</ion-option>
+                <ion-option  value="bmw">BMW</ion-option>
+                <ion-option  value="mercedes">Mercedes</ion-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item fromGroupName="carDetails">
+              <ion-label floating>car color</ion-label>
+              <ion-select #carColor ngControl="carColor"
+              [class.invalid]="!slideTwoForm.controls.carDetails.controls.carColor.valid && (carColorChanged || submitAttempt)"
+                (change)="elementChanged(carColor)">
+                <ion-option value="black" selected>Black</ion-option>
+                <ion-option value="white">White</ion-option>
+                <ion-option value="silver">Silver</ion-option>
+              </ion-select>
+            </ion-item>
+            <ion-item *ngIf="!slideTwoForm.controls.carDetails.controls.carColor.valid  && (carColorChanged || submitAttempt)">
+              <p>Please select color.</p>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item formGroupName="carDetails">
+              <ion-label floating>car model</ion-label>
+              <ion-input #carModel formControlName="carModel" type="text" (change)="elementChanged(carModel)"
+              [class.invalid]="!slideTwoForm.controls.carDetails.controls.carModel.valid && (carModelChanged || submitAttempt)"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!slideTwoForm.controls.carDetails.controls.carModel.valid  && (carModelChanged || submitAttempt)">
+              <p>Please enter a valid car model.</p>
+            </ion-item>
+          </ion-col>
+
+          <ion-col>
+            <ion-item formGroupName="carDetails">
+              <ion-label floating>car year</ion-label>
+              <ion-datetime #carYear formControlName="carYear" displayFormat="YYYY" (change)="elementChanged(carYear)" ngControl="carYear"></ion-datetime>
+            </ion-item>
+          </ion-col>
+        </ion-row>
         <ion-item>
-          <ion-label floating>driving license</ion-label>
-          <ion-input #drivingLicense formControlName="drivingLicense" type="text" (change)="elementChanged(drivingLicense)"
-            [class.invalid]="!slideTwoForm.controls.drivingCredentials.controls.drivingLicense.valid && (drivingLicenseChanged || submitAttempt)"></ion-input>
+          <ion-label floating>Password</ion-label>
+          <ion-input #password formControlName="password" type="password" (change)="elementChanged(password)"
+          [class.invalid]="!slideTwoForm.controls.password.valid && (passwordChanged || submitAttempt)"></ion-input>
         </ion-item>
-        <ion-item *ngIf="!slideTwoForm.controls.drivingCredentials.controls.drivingLicense.valid  && (drivingLicenseChanged || submitAttempt)">
-          <p>Please enter a valid license number.</p>
+        <ion-item class="error-message" *ngIf="!slideTwoForm.controls.password.valid  && (passwordChanged || submitAttempt)">
+          <p>Your password needs more than 6 characters.</p>
         </ion-item>
 
-        <ion-item>
-          <ion-label floating>license expiry date</ion-label>
-          <ion-datetime #expirationDate formControlName="expirationDate" displayFormat="MM-DD-YYYY" (change)="elementChanged(expirationDate)"></ion-datetime>
-        </ion-item>
-
-        <ion-item>
-          <ion-label floating>car make</ion-label>
-          <ion-select #carMake (change)="elementChanged(carMake)" ngControl="carMake">
-            <ion-option value="ford" checked="true">Ford</ion-option>
-            <ion-option value="bmw">BMW</ion-option>
-            <ion-option value="mercedes">Mercedes</ion-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label floating>car model</ion-label>
-          <ion-input #carModel formControlName="carModel" type="text" (change)="elementChanged(carModel)"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label floating>car year</ion-label>
-          <ion-datetime #carYear formControlName="carYear" displayFormat="YYYY" (change)="elementChanged(carYear)"></ion-datetime>
-        </ion-item>
-
-        <ion-item>
-          <ion-label floating>car color</ion-label>
-          <ion-select #carColor (change)="elementChanged(carColor)" ngControl="carColor">
-            <ion-option value="black" checked="true">Black</ion-option>
-            <ion-option value="white">White</ion-option>
-            <ion-option value="silver">Silver</ion-option>
-          </ion-select>
-        </ion-item> -->
-
-        <button ion-button block type="submit">
+        <!-- <button ion-button block type="submit">
           Create an Account
-        </button>
-        <button (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
+        </button> -->
+
+        <button primary (click)="signupUser()">Create Account!</button>
       </form>
+      <button (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
 
     </ion-slide>
 

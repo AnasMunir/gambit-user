@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Slides } from 'ionic-angular';
 import { NavController, LoadingController, AlertController } from 'ionic-angular';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl, FormControlName, NgControl } from '@angular/forms';
 import { AuthData } from '../../providers/auth-data';
 import { EmailValidator } from '../../validators/email';
 import { HomePage } from '../home/home';
@@ -16,8 +16,7 @@ export class SignUpPage {
   public slideOneForm;
   public slideTwoForm;
 
-  firstNameChanged: boolean = false;
-  lastNameChanged: boolean = false;
+  fullNameChanged: boolean = false;
   emailChanged: boolean = false;
   phoneNumberChanged: boolean = false;
   passwordChanged: boolean = false;
@@ -48,31 +47,34 @@ export class SignUpPage {
     public alertCtrl: AlertController) {
 
       this.slideOneForm = formBuilder.group({
-        firstName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-        lastName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-        email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
-        streetAddress: [''],
+        // fullName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+        fullName: [''],
+        // email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
+        email: [''],
         address: this.formBuilder.group({
-          city: ['', Validators.required],
-          state: ['', Validators.required],
+          // streetAddress: [''],
+          city: [''],
+          state: [''],
+          // zipcode: [''],
           zipcode: ['', Validators.compose([Validators.maxLength(5), Validators.pattern('[0-9]*')])],
             }),
         phoneNumber: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[0-9]*'), Validators.required])],
-        password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
       });
 
       this.slideTwoForm = formBuilder.group({
         ssn: ['', Validators.compose([Validators.maxLength(11), Validators.pattern('[0-9]*'), Validators.required])],
         drivingCredentials: this.formBuilder.group({
-          drivingLicense: ['', Validators.compose([Validators.maxLength(8), Validators.pattern('[0-9]*')])],
+          // drivingLicense: ['', Validators.compose([Validators.maxLength(8), Validators.pattern('[0-9]*')])],
+          drivingLicense: [''],
           expirationDate: [''],
         }),
         carDetails: this.formBuilder.group({
-          carMake: ['', Validators.required],
-          carModel: ['', Validators.required],
-          carYear: ['', Validators.required],
-          carColor: ['', Validators.required],
-        })
+          carMake: [''],
+          carModel: [''],
+          carYear: [''],
+          carColor: [''],
+        }),
+        password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
       });
     }
     /**
@@ -100,31 +102,28 @@ export class SignUpPage {
       this.submitAttempt = true;
 
       if (!this.slideOneForm.valid){
-        this.signupSlider.slideTo(0);
+        // this.signupSlider.slideTo(0);
         console.log(this.slideOneForm.value);
       } else if(!this.slideTwoForm.valid) {
-        this.signupSlider.slideTo(1);
         console.log(this.slideTwoForm.value);
       } else {
         this.authData.signUpUser(
-          this.slideOneForm.value.firstName,
-          this.slideOneForm.value.lastName,
+          this.slideOneForm.value.fullName,
           this.slideOneForm.value.email,
-          this.slideOneForm.value.address.value.streetAddress,
-          this.slideOneForm.value.address.value.city,
-          this.slideOneForm.value.address.value.state,
-          this.slideOneForm.value.address.value.zipcode,
+          // this.slideOneForm.value.address.streetAddress,
+          this.slideOneForm.value.address.city,
+          this.slideOneForm.value.address.state,
+          this.slideOneForm.value.address.zipcode,
           this.slideOneForm.value.phoneNumber,
-          this.slideOneForm.value.password,
           this.slideTwoForm.value.ssn,
-          this.slideTwoForm.value.drivingCredentials.value.drivingLicense,
-          this.slideTwoForm.value.drivingCredentials.value.expirationDate,
-          this.slideTwoForm.value.carDetails.value.carMake,
-          this.slideTwoForm.value.carDetails.value.carModel,
-          this.slideTwoForm.value.carDetails.value.carYear,
-          this.slideTwoForm.value.carDetails.value.carColor,
-        )
-        .then(() => {
+          this.slideTwoForm.value.drivingCredentials.drivingLicense,
+          this.slideTwoForm.value.drivingCredentials.expirationDate,
+          this.slideTwoForm.value.carDetails.carMake,
+          this.slideTwoForm.value.carDetails.carModel,
+          this.slideTwoForm.value.carDetails.carYear,
+          this.slideTwoForm.value.carDetails.carColor,
+          this.slideTwoForm.value.password,
+        ).then(() => {
           this.navCtrl.setRoot(HomePage);
         }, (error) => {
           this.loading.dismiss().then( () => {
