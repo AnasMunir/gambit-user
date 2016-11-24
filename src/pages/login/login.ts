@@ -53,7 +53,7 @@ export class LoginPage {
     if (!this.loginForm.valid){
       console.log(this.loginForm.value);
     } else {
-      this.authData.loginUser(this.loginForm.value.email, this.loginForm.value.password).then( authData => {
+      this.authData.loginUser(this.loginForm.value.email, this.loginForm.value.password).then( () => {
         this.navCtrl.setRoot(HomePage);
       }, error => {
         this.loading.dismiss().then( () => {

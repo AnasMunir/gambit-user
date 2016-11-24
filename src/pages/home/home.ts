@@ -16,7 +16,10 @@ export class HomePage {
 
   map: GoogleMap;
   users$: FirebaseObjectObservable<any>;
-
+  ionViewDidLoad() {
+    this.loadMap();
+    console.log('Hello LoginPage Page');
+  }
   constructor(public navCtrl: NavController, public platform: Platform, public authData: AuthData) {
     platform.ready().then(() => {
       this.loadMap();
@@ -26,7 +29,6 @@ export class HomePage {
   loadMap() {
 
     let location = new GoogleMapsLatLng(-34.9290,138.6010);
-
     this.map = new GoogleMap('map', {
       'backgroundColor': 'white',
       'controls': {
@@ -48,8 +50,11 @@ export class HomePage {
         'bearing': 50
       }
     });
-
+    // Geolocation.getCurrentPosition().then(position => {
+    //   let location = new GoogleMapsLatLng(position.coords.latitude, position.coords.longitude);
+    // })
     this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+      // this.map.showDialog();
       console.log('Map is ready!');
     });
 
