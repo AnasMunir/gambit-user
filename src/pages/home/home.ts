@@ -22,14 +22,15 @@ export class HomePage {
     platform.ready().then(() => {
       // this.loadMap();
       this.setLocations();
+      this.getNearbyDrivers();
     });
   }
   setLocations() {
     let user = firebase.auth().currentUser;
-    this.drivers$ = this.af.database.object('drivers/'+user.uid);
-    let ref = firebase.database().ref('drivers/'+user.uid);
+    let ref = firebase.database().ref('drivers/locations');
 
     var geoFire = new GeoFire(ref);
+    this.drivers$ = this.af.database.object('drivers/'+user.uid);
     Geolocation.getCurrentPosition().then(pos => {
       this.drivers$.subscribe(snapshot => {
         geoFire.set(snapshot.fullname, [pos.coords.latitude, pos.coords.longitude]).then(() => {
@@ -40,6 +41,20 @@ export class HomePage {
 
     }).catch(err => {console.log(err)});
 
+  }
+  getNearbyDrivers() {
+    let user = firebase.auth().currentUser;
+    let ref = firebase.database().ref('drivers/locations');
+    var geoFire = new GeoFire(ref);
+
+    var geoQuery = geoFire.query({
+      center: [31.509661, 74.3176762],
+      radius: 2
+    });
+
+    geoQuery.on("key_entered", function(key, location) {
+      console.log(key + " entered the query. Hi " + key + "!");
+    });
   }
   loadMap() {
 
