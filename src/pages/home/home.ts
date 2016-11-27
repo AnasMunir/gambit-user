@@ -20,9 +20,11 @@ export class HomePage {
   constructor(public navCtrl: NavController, public platform: Platform,
     public authData: AuthData, public af: AngularFire) {
     platform.ready().then(() => {
+      setInterval(this.setLocations, 5000);
       // this.loadMap();
-      this.setLocations();
-      this.getNearbyDrivers();
+      // setTimeout(this.setLocations(), 5000);
+      // this.setLocations();
+      // this.getNearbyDrivers();
     });
   }
   setLocations() {
@@ -30,18 +32,14 @@ export class HomePage {
     let ref = firebase.database().ref('drivers/locations');
 
     var geoFire = new GeoFire(ref);
-    this.drivers$ = this.af.database.object('drivers/'+user.uid);
     let options = {
         frequency: 3000,
         enableHighAccuracy: true
       };
-    let watch = Geolocation.watchPosition(options);
-    watch.subscribe((pos: Geoposition) => {
-      this.drivers$.subscribe(snapshot => {
-        geoFire.set(user.uid, [pos.coords.latitude, pos.coords.longitude]).then(() => {
-          ref.child(user.uid).onDisconnect().remove();
-        }).catch(err => {console.log(err)});
-      })
+    Geolocation.getCurrentPosition(options).then((pos: Geoposition) => {
+      geoFire.set(user.uid, [pos.coords.latitude, pos.coords.longitude]).then(() => {
+        ref.child(user.uid).onDisconnect().remove();
+      }).catch(err => {console.log(err)});
     })
     /*watch.subscribe((pos) => {
       if((pos as Geoposition).coords != undefined) {
@@ -74,14 +72,14 @@ export class HomePage {
       radius: 2
     });
     let thatDriverObject$ = this.af.database.object('drivers/');
-
+    // var source2 = thatDriverObject$.timer(5000, 5000).timeInterval();
     thatDriverObject$.subscribe(snapshot => {
-      geoQuery.on("key_entered", function(key) {
-        console.log(snapshot[key]['fullname'] + " entered the query. Hi " + snapshot[key]['fullname'] + "!")
+      geoQuery.on("key_entered", function(key, location) {
+        console.log(snapshot[key]['fullname'] + " entered the query. at location "+ location + snapshot[key]['fullname'] + "!")
       });
-      geoQuery.on("key_exited", function(key) {
-        console.log("Bicycle shop " + snapshot[key]['fullname'] + " left query ");
-      });
+      // geoQuery.on("key_exited", function(key) {
+      //   console.log("Bicycle shop " + snapshot[key]['fullname'] + " left query ");
+      // });
     });
     // watch.unsubscribe();
   }
