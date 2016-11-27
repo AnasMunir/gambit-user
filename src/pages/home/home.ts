@@ -31,15 +31,37 @@ export class HomePage {
 
     var geoFire = new GeoFire(ref);
     this.drivers$ = this.af.database.object('drivers/'+user.uid);
-    Geolocation.getCurrentPosition().then(pos => {
+    let options = {
+        frequency: 3000,
+        enableHighAccuracy: true
+      };
+    let watch = Geolocation.watchPosition(options);
+    watch.subscribe((pos: Geoposition) => {
       this.drivers$.subscribe(snapshot => {
-        geoFire.set(snapshot.fullname, [pos.coords.latitude, pos.coords.longitude]).then(() => {
-          console.log("location set for user with locations "+pos.coords.latitude+" "+pos.coords.longitude);
+        geoFire.set(user.uid, [pos.coords.latitude, pos.coords.longitude]).then(() => {
+          ref.child(user.uid).onDisconnect().remove();
         }).catch(err => {console.log(err)});
-        console.log(snapshot);
-      });
-
-    }).catch(err => {console.log(err)});
+      })
+    })
+    /*watch.subscribe((pos) => {
+      if((pos as Geoposition).coords != undefined) {
+        var geopos = (pos as Geoposition);
+        this.drivers$.subscribe(snapshot => {
+          geoFire.set(user.uid, [geopos.coords.latitude, geopos.coords.longitude]).then(() => {
+            console.log("location set for user with locations "+geopos.coords.latitude+" "+geopos.coords.longitude);
+            // When the user disconnects from Firebase (e.g. closes the app, exits the browser),
+            // remove their GeoFire entry
+            ref.child(user.uid).onDisconnect().remove();
+          }).catch(err => {console.log(err)});
+        });
+      } else {
+        var posError = (pos as PositionError);
+        console.log('Error ' + + posError.code + ': ' + posError.message)
+      }
+    });*/
+  //   watch.subscribe((data) => {
+  //   //
+  // });
 
   }
   getNearbyDrivers() {
@@ -51,10 +73,19 @@ export class HomePage {
       center: [31.509661, 74.3176762],
       radius: 2
     });
+    let thatDriverObject$ = this.af.database.object('drivers/');
 
-    geoQuery.on("key_entered", function(key, location) {
-      console.log(key + " entered the query. Hi " + key + "!");
+    thatDriverObject$.subscribe(snapshot => {
+      geoQuery.on("key_entered", function(key) {
+        console.log(snapshot[key]['fullname'] + " entered the query. Hi " + snapshot[key]['fullname'] + "!")
+      });
+      geoQuery.on("key_exited", function(key) {
+        console.log("Bicycle shop " + snapshot[key]['fullname'] + " left query ");
+      });
     });
+    // watch.unsubscribe();
+  }
+  getThatDriver(key, location) {
   }
   loadMap() {
 
@@ -92,8 +123,11 @@ export class HomePage {
 
   }
   logoutUser() {
+    // let user = firebase.auth().currentUser;
+    // let ref = firebase.database().ref('drivers/locations');
+    // ref.child(user.uid).remove();
+    // this.af.auth.logout();
+    // this.authData.logoutUser();
     this.navCtrl.setRoot(LoginPage);
-    // this.authData.logoutUser().then( authData => {
-    // });
   }
 }
