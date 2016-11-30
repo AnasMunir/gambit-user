@@ -10,7 +10,15 @@
 </ion-header>
 
 <ion-content padding>
-  <div id="map">
+  <!-- <div id="map">
 
-  </div>
+  </div> -->
+  <ion-list>
+    <button ion-item *ngFor="let driver of drivers">
+      <h2>{{ driver }}</h2>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+   <!-- <h2>{{ fuckShit }}</h2> -->
+   <!-- <ion-icon name="arrow-forward" item-right></ion-icon> -->
+  </ion-list>
 </ion-content>

@@ -4,8 +4,13 @@ import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, Geolocation, Geoposition 
 import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2';
 
 import { LoginPage } from '../login/login';
-import { Observable } from 'rxjs/Observable';
+import 'rxjs/Rx';
+import 'rxjs/add/operator/bufferTime'
+import { Observable } from 'rxjs/Rx';
 import { AuthData } from '../../providers/auth-data';
+
+import { Driver } from '../../models/drivers';
+
 declare var GeoFire: any;
 
 @Component({
@@ -13,9 +18,13 @@ declare var GeoFire: any;
   templateUrl: 'home.html'
 })
 export class HomePage {
-
+  public fuckShit: any;
+  drivers: any[] = [];
+  driverKeys: any[] = [];
   map: GoogleMap;
   drivers$: FirebaseObjectObservable<any>;
+  driversList$: FirebaseListObservable<any>;
+  // buffer: BufferTime<T>
 
   constructor(public navCtrl: NavController, public platform: Platform,
     public authData: AuthData, public af: AngularFire) {
@@ -24,7 +33,8 @@ export class HomePage {
       // this.loadMap();
       // setTimeout(this.setLocations(), 5000);
       // this.setLocations();
-      // this.getNearbyDrivers();
+      // setInterval(this.getNearbyDrivers, 5000);
+      this.getNearbyDrivers();
     });
   }
   setLocations() {
@@ -68,22 +78,37 @@ export class HomePage {
     var geoFire = new GeoFire(ref);
 
     var geoQuery = geoFire.query({
-      center: [31.509661, 74.3176762],
+      center: [31.5158711, 74.3412112],
       radius: 2
     });
-    let thatDriverObject$ = this.af.database.object('drivers/');
-    // var source2 = thatDriverObject$.timer(5000, 5000).timeInterval();
-    thatDriverObject$.subscribe(snapshot => {
-      geoQuery.on("key_entered", function(key, location) {
-        console.log(snapshot[key]['fullname'] + " entered the query. at location "+ location + snapshot[key]['fullname'] + "!")
+
+    this.drivers$ = this.af.database.object('drivers/');
+    // var fuckShit = this.drivers$;
+    // this.driversList$ = this.af.database.list('drivers/');
+    // var source = Observable.create();
+    // source = this.af.database.object('drivers/')
+
+    // var bakwaas = this.drivers$.take(2).subscribe(snapshot => {
+    //   geoQuery.on("key_entered", key => {
+    //     this.fuckShit = snapshot[key]['fullname'];
+    //     this.drivers.push(this.fuckShit);
+    //     console.log(this.fuckShit);
+    //     console.log(this.drivers);
+    //   });
+    // });
+    geoQuery.on("key_entered", key => {
+      var bakwaas = this.drivers$.first().subscribe(snapshot => {
+        this.fuckShit = snapshot[key]['fullname'];
+        this.drivers.push(this.fuckShit);
+        console.log(this.fuckShit);
+        console.log(this.drivers);
       });
-      // geoQuery.on("key_exited", function(key) {
-      //   console.log("Bicycle shop " + snapshot[key]['fullname'] + " left query ");
-      // });
     });
-    // watch.unsubscribe();
+    // bakwaas.unsubscribe();
+
   }
-  getThatDriver(key, location) {
+  filterByKey(snapshot) {
+    return snapshot.$key === this.driverKeys
   }
   loadMap() {
 
