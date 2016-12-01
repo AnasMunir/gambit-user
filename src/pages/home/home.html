@@ -14,11 +14,19 @@
 
   </div> -->
   <ion-list>
-    <button ion-item *ngFor="let driver of drivers">
-      <h2>{{ driver }}</h2>
+    <ion-list-header>
+      Drivers
+    </ion-list-header>
+    <ion-item *ngFor="let driver of drivers" (click)="openModal(driver)">
+      <button>
+        <h4>{{ (driver)?.fullname }}</h4>
+      </button>
       <ion-icon name="arrow-forward" item-right></ion-icon>
-    </button>
-   <!-- <h2>{{ fuckShit }}</h2> -->
-   <!-- <ion-icon name="arrow-forward" item-right></ion-icon> -->
-  </ion-list>
+    </ion-item>
+    <!-- <button ion-item *ngFor="let driver of drivers" (click)="openModal()">
+    <ion-icon name="arrow-forward" item-right></ion-icon>
+  </button> -->
+  <!-- <h2>{{ fuckShit }}</h2> -->
+  <!-- <ion-icon name="arrow-forward" item-right></ion-icon> -->
+</ion-list>
 </ion-content>

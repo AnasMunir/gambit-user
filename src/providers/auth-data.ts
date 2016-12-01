@@ -24,43 +24,15 @@ export class AuthData {
   logoutUser(): any {
     return this.af.auth.logout();
   }
-  signUpUser(
-    newFirstUser: string,
-    newEmail: string,
-    // newStreetAddress: string,
-    newCity: string,
-    newState: string,
-    newZipCode: string,
-    newPhoneNumber: string,
-    newSSN: string,
-    newDrivingLicense: string,
-    newExpirationDate: string,
-    newCarMake: string,
-    newCarModel: string,
-    newCarYear: string,
-    newCarColor: string,
-    newPassword: string): any {
+  signUpUser(newEmail: string, newPassword: string): any {
     // return firebase.auth().createUserWithEmailAndPassword(newEmail, newPassword);
     return this.af.auth.createUser(
       { email: newEmail,
         password: newPassword }).then(regUser => {
 
           var ref = firebase.database().ref('/');
-          ref.child('drivers').child(regUser.uid).set({
-            fullname: newFirstUser,
-            email: newEmail,
-            // streetAddress: newStreetAddress,
-            city: newCity,
-            state: newState,
-            zipcode: newZipCode,
-            phonenumber: newPhoneNumber,
-            ssn: newSSN,
-            drivingLicense: newDrivingLicense,
-            expirationDate: newExpirationDate,
-            car_make: newCarMake,
-            car_model: newCarModel,
-            car_year: newCarYear,
-            car_color: newCarColor
+          ref.child('users').child(regUser.uid).set({
+            email: newEmail
           });
         }).catch(err => {console.log(err)});
   }

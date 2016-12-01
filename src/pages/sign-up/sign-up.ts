@@ -13,29 +13,9 @@ import { HomePage } from '../home/home';
 export class SignUpPage {
   @ViewChild('signupSlider') signupSlider: Slides;
 
-  public slideOneForm;
-  public slideTwoForm;
-
-  fullNameChanged: boolean = false;
+  public signupForm;
   emailChanged: boolean = false;
-  phoneNumberChanged: boolean = false;
   passwordChanged: boolean = false;
-
-
-  ssnChanged: boolean = false;
-
-  streetAddressChanged: boolean = false;
-  cityChanged: boolean = false;
-  stateChanged: boolean = false;
-  zipcodeChanged: boolean = false;
-
-  drivingLicenseChanged: boolean = false;
-  expirationDataChanged: boolean = false;
-
-  carMakeChanged: boolean = false;
-  carModelChanged: boolean = false;
-  carYearChanged: boolean = false;
-  carColorChanged: boolean = false;
 
   submitAttempt: boolean = false;
   loading;
@@ -46,36 +26,10 @@ export class SignUpPage {
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController) {
 
-      this.slideOneForm = formBuilder.group({
-        // fullName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-        fullName: [''],
-        // email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
-        email: [''],
-        address: this.formBuilder.group({
-          // streetAddress: [''],
-          city: [''],
-          state: [''],
-          // zipcode: [''],
-          zipcode: ['', Validators.compose([Validators.maxLength(5), Validators.pattern('[0-9]*')])],
-            }),
-        phoneNumber: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[0-9]*'), Validators.required])],
-      });
-
-      this.slideTwoForm = formBuilder.group({
-        ssn: ['', Validators.compose([Validators.maxLength(11), Validators.pattern('[0-9]*'), Validators.required])],
-        drivingCredentials: this.formBuilder.group({
-          // drivingLicense: ['', Validators.compose([Validators.maxLength(8), Validators.pattern('[0-9]*')])],
-          drivingLicense: [''],
-          expirationDate: [''],
-        }),
-        carDetails: this.formBuilder.group({
-          carMake: [''],
-          carModel: [''],
-          carYear: [''],
-          carColor: [''],
-        }),
+      this.signupForm = formBuilder.group({
+        email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
         password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
-      });
+        });
     }
     /**
     * Receives an input field and sets the corresponding fieldChanged property to 'true' to help with the styles.
@@ -84,14 +38,6 @@ export class SignUpPage {
       let field = input.inputControl.name;
       this[field + "Changed"] = true;
     }
-    next(){
-      this.signupSlider.slideNext();
-    }
-
-    prev(){
-      this.signupSlider.slidePrev();
-    }
-
     /**
     * If the form is valid it will call the AuthData service to sign the user up password displaying a loading
     *  component while the user waits.
@@ -101,29 +47,11 @@ export class SignUpPage {
     signupUser(){
       this.submitAttempt = true;
 
-      if (!this.slideOneForm.valid){
-        // this.signupSlider.slideTo(0);
-        console.log(this.slideOneForm.value);
-      } else if(!this.slideTwoForm.valid) {
-        console.log(this.slideTwoForm.value);
+      if (!this.signupForm.valid){
+        console.log(this.signupForm.value);
       } else {
-        this.authData.signUpUser(
-          this.slideOneForm.value.fullName,
-          this.slideOneForm.value.email,
-          // this.slideOneForm.value.address.streetAddress,
-          this.slideOneForm.value.address.city,
-          this.slideOneForm.value.address.state,
-          this.slideOneForm.value.address.zipcode,
-          this.slideOneForm.value.phoneNumber,
-          this.slideTwoForm.value.ssn,
-          this.slideTwoForm.value.drivingCredentials.drivingLicense,
-          this.slideTwoForm.value.drivingCredentials.expirationDate,
-          this.slideTwoForm.value.carDetails.carMake,
-          this.slideTwoForm.value.carDetails.carModel,
-          this.slideTwoForm.value.carDetails.carYear,
-          this.slideTwoForm.value.carDetails.carColor,
-          this.slideTwoForm.value.password,
-        ).then(() => {
+        this.authData.signUpUser(this.signupForm.value.email, this.signupForm.value.password)
+        .then(() => {
           this.navCtrl.setRoot(HomePage);
         }, (error) => {
           this.loading.dismiss().then( () => {

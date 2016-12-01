@@ -3,6 +3,7 @@ import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { HomePage } from '../pages/home/home';
+import { ModalPage } from '../pages/modal-page/modal-page';
 import { LoginPage } from '../pages/login/login';
 import { ResetPasswordPage } from '../pages/reset-password/reset-password';
 import { SignUpPage } from '../pages/sign-up/sign-up';
@@ -34,8 +35,8 @@ const myFirebaseAuthConfig = {
     HomePage,
     LoginPage,
     ResetPasswordPage,
-    SignUpPage
-
+    SignUpPage,
+    ModalPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -47,7 +48,8 @@ const myFirebaseAuthConfig = {
     HomePage,
     LoginPage,
     ResetPasswordPage,
-    SignUpPage
+    SignUpPage,
+    ModalPage
   ],
   providers: [AuthData, ConnectivityService]
 })
